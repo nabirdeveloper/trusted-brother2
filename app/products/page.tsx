@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Grid, List, SlidersHorizontal } from 'lucide-react';
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +22,7 @@ export default function ProductsPage() {
     try {
       setLoading(true);
       let url = '/api/products';
-      
+
       if (filters) {
         const params = new URLSearchParams();
         if (filters.category && filters.category !== 'all') {
@@ -38,7 +37,7 @@ export default function ProductsPage() {
         if (filters.search) {
           params.append('search', filters.search);
         }
-        
+
         if (params.toString()) {
           url += `?${params.toString()}`;
         }
@@ -46,12 +45,11 @@ export default function ProductsPage() {
 
       const response = await fetch(url);
       if (response.ok) {
-        const data = await response.json();
-        setProducts(data);
+        const data: Product[] = await response.json();
         setFilteredProducts(data);
-        
+
         // Extract unique categories
-        const uniqueCategories = [...new Set(data.map((product: Product) => product.category))];
+        const uniqueCategories = [...new Set(data.map((product) => product.category))];
         setCategories(uniqueCategories);
       }
     } catch (error) {
@@ -76,7 +74,7 @@ export default function ProductsPage() {
               {loading ? 'Loading...' : `${filteredProducts.length} products found`}
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-4 mt-4 sm:mt-0">
             {/* Mobile filter toggle */}
             <Button
@@ -88,7 +86,7 @@ export default function ProductsPage() {
               <SlidersHorizontal className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            
+
             {/* View mode toggle */}
             <div className="flex border rounded-lg">
               <Button
@@ -117,7 +115,7 @@ export default function ProductsPage() {
             <div className="sticky top-24">
               <ProductFilter
                 categories={categories}
-                onFilterChange={handleFilterChange}
+                onFilterChangeAction={handleFilterChange}
               />
             </div>
           </div>
@@ -125,11 +123,10 @@ export default function ProductsPage() {
           {/* Products Grid */}
           <div className="flex-1">
             {loading ? (
-              <div className={`grid gap-6 ${
-                viewMode === 'grid' 
-                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+              <div className={`grid gap-6 ${viewMode === 'grid'
+                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                   : 'grid-cols-1'
-              }`}>
+                }`}>
                 {[...Array(12)].map((_, i) => (
                   <div key={i} className="bg-white rounded-xl p-4 animate-pulse">
                     <div className="aspect-square bg-gray-200 rounded-lg mb-4"></div>
@@ -140,11 +137,10 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className={`grid gap-6 ${
-                viewMode === 'grid' 
-                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+              <div className={`grid gap-6 ${viewMode === 'grid'
+                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
                   : 'grid-cols-1'
-              }`}>
+                }`}>
                 {filteredProducts.map((product) => (
                   <ProductCard key={product._id} product={product} />
                 ))}

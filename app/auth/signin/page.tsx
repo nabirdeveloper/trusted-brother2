@@ -16,11 +16,11 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  
+
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const error = searchParams.get('error');
 
@@ -46,14 +46,14 @@ export default function SignIn() {
         SessionRequired: 'Please sign in to access this page',
         Default: 'An error occurred during sign in',
       };
-      
+
       toast.error(errorMessages[error] || errorMessages.Default);
     }
   }, [error]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error('Please fill in all fields');
       return;
@@ -73,10 +73,10 @@ export default function SignIn() {
         toast.error('Invalid email or password');
       } else if (result?.ok) {
         toast.success('Signed in successfully!');
-        
+
         // Get fresh session to check role
         const session = await getSession();
-        
+
         // Redirect based on role and callback URL
         if (session?.user.role === 'admin' && callbackUrl === '/') {
           router.push('/admin');
@@ -100,9 +100,9 @@ export default function SignIn() {
 
     setEmail(credentials[demoType].email);
     setPassword(credentials[demoType].password);
-    
+
     setLoading(true);
-    
+
     try {
       const result = await signIn('credentials', {
         email: credentials[demoType].email,
@@ -114,7 +114,7 @@ export default function SignIn() {
       if (result?.ok) {
         toast.success(`Signed in as ${demoType}!`);
         const session = await getSession();
-        
+
         if (session?.user.role === 'admin') {
           router.push('/admin');
         } else {
@@ -124,6 +124,7 @@ export default function SignIn() {
         toast.error('Demo login failed');
       }
     } catch (error) {
+      console.error('Demo login error:', error);
       toast.error('Demo login failed');
     } finally {
       setLoading(false);
@@ -271,8 +272,8 @@ export default function SignIn() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link 
+              Don&apos;t have an account?{' '}
+              <Link
                 href={`/auth/signup${callbackUrl !== '/' ? `?callbackUrl=${encodeURIComponent(callbackUrl)}` : ''}`}
                 className="text-blue-600 hover:text-blue-500 font-medium"
               >

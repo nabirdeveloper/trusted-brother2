@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Order } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { User, Package, MapPin, Phone, Mail, Calendar } from 'lucide-react';
-import Link from 'next/link';
+
 
 function ProfileContent() {
   const { data: session } = useSession();
@@ -77,15 +78,15 @@ function ProfileContent() {
                     <User className="w-8 h-8 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{session.user.name}</h3>
-                    <p className="text-sm text-gray-500">{session.user.role}</p>
+                    <h3 className="font-semibold text-gray-900">{session?.user?.name}</h3>
+                    <p className="text-sm text-gray-500">{session?.user?.role}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3 pt-4 border-t">
                   <div className="flex items-center text-sm text-gray-600">
                     <Mail className="w-4 h-4 mr-3" />
-                    {session.user.email}
+                    {session?.user?.email}
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <Package className="w-4 h-4 mr-3" />
@@ -157,9 +158,11 @@ function ProfileContent() {
                               </span>
                             ))}
                           </div>
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
+                          <Link href={`/orders/${order._id}`}>
+                            <Button variant="outline" size="sm">
+                              View Details
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     ))}
@@ -169,9 +172,11 @@ function ProfileContent() {
                     <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
                     <p className="text-gray-500 mb-4">Start shopping to see your orders here</p>
-                    <Button>
-                      Start Shopping
-                    </Button>
+                    <Link href="/products">
+                      <Button>
+                        Start Shopping
+                      </Button>
+                    </Link>
                   </div>
                 )}
               </CardContent>

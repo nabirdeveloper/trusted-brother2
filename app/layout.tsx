@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from '@/components/providers/Providers';
 import Navbar from '@/components/Navbar';
-import AuthStatus from '@/components/auth/AuthStatus';
+//import AuthStatus from '@/components/auth/AuthStatus';
 
 export const metadata: Metadata = {
   title: "ShopHub - Your Ultimate E-commerce Destination",

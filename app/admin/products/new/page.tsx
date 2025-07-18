@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -93,7 +94,7 @@ export default function NewProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.description || !formData.price || !formData.category) {
       toast.error('Please fill in all required fields');
       return;
@@ -129,6 +130,7 @@ export default function NewProductPage() {
         toast.error(error.error || 'Failed to create product');
       }
     } catch (error) {
+      console.error('Error creating product:', error);
       toast.error('Something went wrong');
     } finally {
       setLoading(false);
@@ -261,7 +263,7 @@ export default function NewProductPage() {
             <CardContent>
               <div className="space-y-4">
                 <CldUploadWidget
-                  uploadPreset="ml_default" // You'll need to set this up in Cloudinary
+                  uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
                   onSuccess={handleImageUpload}
                 >
                   {({ open }) => (
@@ -281,9 +283,11 @@ export default function NewProductPage() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {formData.images.map((image, index) => (
                       <div key={index} className="relative group">
-                        <img
+                        <Image
                           src={image}
                           alt={`Product ${index + 1}`}
+                          width={200}
+                          height={128}
                           className="w-full h-32 object-cover rounded-lg"
                         />
                         <button

@@ -40,19 +40,19 @@ export default function AuthError() {
         <CardContent className="space-y-4">
           <div className="text-center">
             <p className="text-sm text-gray-600 mb-6">
-              {error === 'CredentialsSignin' 
+              {error === 'CredentialsSignin'
                 ? 'Please check your email and password and try again.'
                 : 'Please try signing in again or contact support if the problem persists.'
               }
             </p>
-            
+
             <div className="space-y-3">
               <Link href="/auth/signin" className="block">
                 <Button className="w-full">
                   Try Again
                 </Button>
               </Link>
-              
+
               <Link href="/" className="block">
                 <Button variant="outline" className="w-full">
                   <ArrowLeft className="w-4 h-4 mr-2" />
@@ -65,7 +65,7 @@ export default function AuthError() {
           {error === 'Configuration' && (
             <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
               <p className="text-sm text-yellow-800">
-                If you're the site administrator, please check your authentication configuration.
+                If you&apos;re the site administrator, please check your authentication configuration.
               </p>
             </div>
           )}

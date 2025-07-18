@@ -1,18 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Order } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  ArrowLeft, 
-  Search, 
-  Eye, 
+import {
+  ArrowLeft,
+  Search,
+  Eye,
   Filter,
   Calendar,
   DollarSign
@@ -30,7 +30,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    
+
     if (!session || session.user.role !== 'admin') {
       router.push('/');
       return;
@@ -38,10 +38,6 @@ export default function AdminOrdersPage() {
 
     fetchOrders();
   }, [session, status, router]);
-
-  useEffect(() => {
-    filterOrders();
-  }, [orders, searchTerm, selectedStatus]);
 
   const fetchOrders = async () => {
     try {
@@ -59,7 +55,7 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const filterOrders = () => {
+  const filterOrders = useCallback(() => {
     let filtered = orders;
 
     if (searchTerm) {
@@ -67,7 +63,7 @@ export default function AdminOrdersPage() {
         const userName = typeof order.user === 'object' ? order.user.name : '';
         const orderId = order._id.slice(-6);
         return userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               orderId.toLowerCase().includes(searchTerm.toLowerCase());
+          orderId.toLowerCase().includes(searchTerm.toLowerCase());
       });
     }
 
@@ -76,7 +72,11 @@ export default function AdminOrdersPage() {
     }
 
     setFilteredOrders(filtered);
-  };
+  }, [orders, searchTerm, selectedStatus]);
+
+  useEffect(() => {
+    filterOrders();
+  }, [filterOrders]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
@@ -95,6 +95,7 @@ export default function AdminOrdersPage() {
         toast.error('Failed to update order status');
       }
     } catch (error) {
+      console.error('Error updating order status:', error);
       toast.error('Something went wrong');
     }
   };
@@ -198,7 +199,7 @@ export default function AdminOrdersPage() {
                           {order.status}
                         </Badge>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
                         <div className="flex items-center">
                           <span className="font-medium">Customer:</span>
@@ -268,7 +269,7 @@ export default function AdminOrdersPage() {
                 {orders.length === 0 ? 'No orders found' : 'No orders match your filters'}
               </h3>
               <p className="text-gray-500">
-                {orders.length === 0 
+                {orders.length === 0
                   ? 'Orders will appear here once customers start placing them'
                   : 'Try adjusting your search or filter criteria'
                 }

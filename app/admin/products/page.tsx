@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -8,13 +8,13 @@ import Image from 'next/image';
 import { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
   Eye,
   ArrowLeft,
   Filter
@@ -31,21 +31,6 @@ export default function AdminProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [categories, setCategories] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session || session.user.role !== 'admin') {
-      router.push('/');
-      return;
-    }
-
-    fetchProducts();
-  }, [session, status, router]);
-
-  useEffect(() => {
-    filterProducts();
-  }, [products, searchTerm, selectedCategory]);
-
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -53,9 +38,9 @@ export default function AdminProductsPage() {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
-        
+
         // Extract unique categories
-        const uniqueCategories = [...new Set(data.map((product: Product) => product.category))];
+        const uniqueCategories = [...new Set(data.map((product: Product) => product.category))] as string[];
         setCategories(uniqueCategories);
       }
     } catch (error) {
@@ -66,7 +51,7 @@ export default function AdminProductsPage() {
     }
   };
 
-  const filterProducts = () => {
+  const filterProducts = useCallback(() => {
     let filtered = products;
 
     if (searchTerm) {
@@ -81,7 +66,22 @@ export default function AdminProductsPage() {
     }
 
     setFilteredProducts(filtered);
-  };
+  }, [products, searchTerm, selectedCategory]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (!session || session.user.role !== 'admin') {
+      router.push('/');
+      return;
+    }
+
+    fetchProducts();
+  }, [session, status, router]);
+
+  useEffect(() => {
+    filterProducts();
+  }, [filterProducts]);
 
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm('Are you sure you want to delete this product?')) {
@@ -100,6 +100,7 @@ export default function AdminProductsPage() {
         toast.error('Failed to delete product');
       }
     } catch (error) {
+      console.error('Error deleting product:', error);
       toast.error('Something went wrong');
     }
   };
@@ -183,7 +184,7 @@ export default function AdminProductsPage() {
               <Card key={product._id} className="hover:shadow-lg transition-shadow">
                 <div className="relative aspect-square overflow-hidden rounded-t-lg">
                   <Image
-                    src={product.images[0] || '/placeholder-product.jpg'}
+                    src={product.images[0] || '/placeholder-product.svg'}
                     alt={product.name}
                     fill
                     className="object-cover"
@@ -199,7 +200,7 @@ export default function AdminProductsPage() {
                     </Badge>
                   )}
                 </div>
-                
+
                 <CardContent className="p-4">
                   <div className="mb-3">
                     <h3 className="font-semibold text-lg text-gray-900 mb-1 line-clamp-2">
@@ -264,7 +265,7 @@ export default function AdminProductsPage() {
                 {products.length === 0 ? 'No products found' : 'No products match your filters'}
               </h3>
               <p className="text-gray-500 mb-6">
-                {products.length === 0 
+                {products.length === 0
                   ? 'Get started by adding your first product'
                   : 'Try adjusting your search or filter criteria'
                 }

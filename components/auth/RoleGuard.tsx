@@ -53,7 +53,7 @@ export function ModeratorOnly({ children, fallback }: { children: ReactNode; fal
 
 export function AuthenticatedOnly({ children, fallback }: { children: ReactNode; fallback?: ReactNode }) {
   return (
-    <RoleGuard allowedRoles={['user']} fallback={fallback}>
+    <RoleGuard allowedRoles={['user', 'admin']} fallback={fallback}>
       {children}
     </RoleGuard>
   );

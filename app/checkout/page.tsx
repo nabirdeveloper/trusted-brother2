@@ -42,7 +42,7 @@ export default function CheckoutPage() {
     }
 
     setCartItems(cart);
-    
+
     // Pre-fill form with user data if available
     if (session.user) {
       setFormData(prev => ({
@@ -61,7 +61,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!session) {
       toast.error('Please sign in to place order');
       return;
@@ -106,6 +106,7 @@ export default function CheckoutPage() {
         toast.error(error.error || 'Failed to place order');
       }
     } catch (error) {
+      console.error('Order placement error:', error);
       toast.error('Something went wrong');
     } finally {
       setLoading(false);
@@ -303,7 +304,7 @@ export default function CheckoutPage() {
                     <div key={item.productId} className="flex items-center space-x-3">
                       <div className="relative w-12 h-12 flex-shrink-0">
                         <Image
-                          src={item.product.images[0] || '/placeholder-product.jpg'}
+                          src={item.product.images[0] || '/placeholder-product.svg'}
                           alt={item.product.name}
                           fill
                           className="object-cover rounded"
@@ -332,7 +333,7 @@ export default function CheckoutPage() {
                     <span>Subtotal</span>
                     <span>${subtotal.toFixed(2)}</span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span>Shipping</span>
                     <span>
@@ -343,9 +344,9 @@ export default function CheckoutPage() {
                       )}
                     </span>
                   </div>
-                  
+
                   <hr />
-                  
+
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total</span>
                     <span>${total.toFixed(2)}</span>

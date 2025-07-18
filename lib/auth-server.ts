@@ -1,41 +1,46 @@
 // Server-side only authentication utilities
-import { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import bcrypt from 'bcryptjs';
-import connectDB from './mongodb';
-import User from '@/models/User';
+import { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
+import connectDB from "./mongodb";
+import User from "@/models/User";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
-            throw new Error('Email and password are required');
+            throw new Error("Email and password are required");
           }
 
           await connectDB();
-          
-          const user = await User.findOne({ email: credentials.email.toLowerCase() });
-          
+
+          const user = await User.findOne({
+            email: credentials.email.toLowerCase(),
+          });
+
           if (!user) {
-            throw new Error('No user found with this email');
+            throw new Error("No user found with this email");
           }
 
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-          
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+
           if (!isPasswordValid) {
-            throw new Error('Invalid password');
+            throw new Error("Invalid password");
           }
 
           // Update last login
-          await User.findByIdAndUpdate(user._id, { 
-            lastLogin: new Date() 
+          await User.findByIdAndUpdate(user._id, {
+            lastLogin: new Date(),
           });
 
           return {
@@ -45,14 +50,14 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
           };
         } catch (error) {
-          console.error('Authentication error:', error);
+          console.error("Authentication error:", error);
           return null;
         }
-      }
-    })
+      },
+    }),
   ],
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   callbacks: {
@@ -64,7 +69,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Handle session updates
-      if (trigger === 'update' && session) {
+      if (trigger === "update" && session) {
         token.name = session.name;
         token.email = session.email;
       }
@@ -82,32 +87,32 @@ export const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       // Allows relative callback URLs
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
   },
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
   events: {
-    async signIn({ user, account, profile, isNewUser }) {
+    async signIn({ user }) {
       console.log(`User ${user.email} signed in`);
     },
-    async signOut({ session, token }) {
+    async signOut() {
       console.log(`User signed out`);
     },
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === "development",
 };
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface User {
     role?: string;
   }
-  
+
   interface Session {
     user: {
       id: string;
@@ -116,7 +121,7 @@ declare module 'next-auth' {
       role: string;
     };
   }
-  
+
   interface JWT {
     role?: string;
     id?: string;

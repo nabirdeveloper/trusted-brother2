@@ -83,7 +83,7 @@ export default function Home() {
                 <Headphones className="w-8 h-8 text-purple-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>
-              <p className="text-gray-600">We're here to help whenever you need us</p>
+              <p className="text-gray-600">We&apos;re here to help whenever you need us</p>
             </div>
           </div>
         </div>

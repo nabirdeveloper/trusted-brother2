@@ -9,7 +9,7 @@ import { X } from 'lucide-react';
 
 interface FilterProps {
   categories: string[];
-  onFilterChange: (filters: FilterState) => void;
+  onFilterChangeAction: (filters: FilterState) => void;
   initialFilters?: FilterState;
 }
 
@@ -20,7 +20,7 @@ export interface FilterState {
   search: string;
 }
 
-export default function ProductFilter({ categories, onFilterChange, initialFilters }: FilterProps) {
+export default function ProductFilter({ categories, onFilterChangeAction, initialFilters }: FilterProps) {
   const [filters, setFilters] = useState<FilterState>(
     initialFilters || {
       category: 'all',
@@ -33,7 +33,7 @@ export default function ProductFilter({ categories, onFilterChange, initialFilte
   const handleFilterChange = (key: keyof FilterState, value: string) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
-    onFilterChange(newFilters);
+    onFilterChangeAction(newFilters);
   };
 
   const clearFilters = () => {
@@ -44,7 +44,7 @@ export default function ProductFilter({ categories, onFilterChange, initialFilte
       search: '',
     };
     setFilters(clearedFilters);
-    onFilterChange(clearedFilters);
+    onFilterChangeAction(clearedFilters);
   };
 
   const hasActiveFilters = filters.category !== 'all' || filters.minPrice || filters.maxPrice || filters.search;
@@ -158,7 +158,7 @@ export default function ProductFilter({ categories, onFilterChange, initialFilte
               )}
               {filters.search && (
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  "{filters.search}"
+                  {filters.search}&quot;
                   <X
                     className="w-3 h-3 cursor-pointer"
                     onClick={() => handleFilterChange('search', '')}

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://aghanoor:G2Xvx3kQi5r82TSL@cluster0.6iuuagu.mongodb.net/trusted-brother2?retryWrites=true&w=majority';
@@ -38,14 +38,14 @@ const demoUsers = [
   },
   {
     name: "John Doe",
-    email: "user@example.com", 
+    email: "user@example.com",
     password: "user123",
     role: "user"
   },
   {
     name: "Jane Smith",
     email: "moderator@example.com",
-    password: "moderator123", 
+    password: "moderator123",
     role: "moderator"
   },
   {
@@ -56,7 +56,7 @@ const demoUsers = [
   },
   {
     name: "Bob Wilson",
-    email: "bob@example.com", 
+    email: "bob@example.com",
     password: "bob123",
     role: "user"
   }
@@ -69,8 +69,8 @@ async function createDemoUsers() {
     console.log('✅ Connected to MongoDB');
 
     // Clear existing demo users
-    await User.deleteMany({ 
-      email: { $in: demoUsers.map(user => user.email) } 
+    await User.deleteMany({
+      email: { $in: demoUsers.map(user => user.email) }
     });
     console.log('🧹 Cleared existing demo users');
 

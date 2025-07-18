@@ -2,12 +2,11 @@
 
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { ShoppingCart, User, Search, Menu, Shield, Settings } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
 import { getCartFromStorage } from '@/lib/cart';
-import { AdminOnly, AuthenticatedOnly } from '@/components/auth/RoleGuard';
+import { AdminOnly } from '@/components/auth/RoleGuard';
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -22,7 +21,7 @@ export default function Navbar() {
     };
 
     updateCartCount();
-    
+
     // Listen for cart updates
     window.addEventListener('cartUpdated', updateCartCount);
     return () => window.removeEventListener('cartUpdated', updateCartCount);

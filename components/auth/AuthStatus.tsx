@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Shield, Clock } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 export default function AuthStatus() {
   const { data: session, status } = useSession();
@@ -27,7 +27,7 @@ export default function AuthStatus() {
             {status}
           </Badge>
         </div>
-        
+
         {session && (
           <>
             <div className="flex items-center justify-between">
@@ -50,7 +50,7 @@ export default function AuthStatus() {
             </div>
           </>
         )}
-        
+
         {!session && status !== 'loading' && (
           <div className="text-center text-gray-500">
             Not authenticated

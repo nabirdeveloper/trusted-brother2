@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Product } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +27,7 @@ export default function CategoriesPage() {
       const response = await fetch('/api/products');
       if (response.ok) {
         const products: Product[] = await response.json();
-        
+
         // Group products by category
         const categoryMap = new Map<string, Product[]>();
         products.forEach(product => {
@@ -113,10 +114,11 @@ export default function CategoriesPage() {
                       <Link key={product._id} href={`/products/${product._id}`}>
                         <div className="group cursor-pointer">
                           <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100 mb-3">
-                            <img
-                              src={product.images[0] || '/placeholder-product.jpg'}
+                            <Image
+                              src={product.images[0] || '/placeholder-product.svg'}
                               alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                             {product.featured && (
                               <Badge className="absolute top-2 left-2 bg-yellow-500">

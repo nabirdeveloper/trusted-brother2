@@ -131,7 +131,7 @@ export default function ProductDetailPage() {
           <div className="space-y-4">
             <div className="aspect-square relative overflow-hidden rounded-lg bg-white">
               <Image
-                src={product.images[selectedImage] || '/placeholder-product.jpg'}
+                src={product.images[selectedImage] || '/placeholder-product.svg'}
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -290,7 +290,7 @@ export default function ProductDetailPage() {
                   <Link href={`/products/${relatedProduct._id}`}>
                     <div className="aspect-square relative mb-3 overflow-hidden rounded-lg">
                       <Image
-                        src={relatedProduct.images[0] || '/placeholder-product.jpg'}
+                        src={relatedProduct.images[0] || '/placeholder-product.svg'}
                         alt={relatedProduct.name}
                         fill
                         className="object-cover hover:scale-105 transition-transform"
